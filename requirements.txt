@@ -1,0 +1,6 @@
+streamlit
+pytesseract
+Pillow
+google-generativeai
+opencv-python-headless
+requests
