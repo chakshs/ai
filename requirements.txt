@@ -4,4 +4,3 @@ Pillow
 google-generativeai
 opencv-python-headless
 requests
-matplotlib
