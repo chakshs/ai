@@ -6,8 +6,8 @@ import google.generativeai as genai
 genai.configure(api_key="AIzaSyAmF7hNQdmgKu7ilvW7vWoHN74vEgF7GBE")
 model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
 
-st.set_page_config("\ud83c\udf73 AI Cooking Assistant", layout="centered")
-st.title("\ud83c\udf7d\ufe0f AI Cooking Dashboard")
+st.set_page_config("🍳 AI Cooking Assistant", layout="centered")
+st.title("🍽️ AI Cooking Dashboard")
 
 # ========== INIT SESSION ==========
 if "timers" not in st.session_state:
@@ -44,9 +44,9 @@ def format_time(secs):
 
 # ========== RECIPE INPUT ==========
 st.markdown("Paste a recipe to get started:")
-text_input = st.text_area("\u270d\ufe0f Paste Recipe")
+text_input = st.text_area("✍️ Paste Recipe")
 
-if st.button("\ud83e\udde0 Analyze with AI"):
+if st.button("🧠 Analyze with AI"):
     if text_input.strip() == "":
         st.warning("Please enter a recipe.")
     else:
@@ -54,7 +54,7 @@ if st.button("\ud83e\udde0 Analyze with AI"):
             time_est = get_cooking_time(text_input)
             steps = get_steps(text_input)
             nutrition = get_nutrition(text_input)
-            label = f"\ud83c\udf73 {text_input.split()[0][:15]}..."
+            label = f"🍳 {text_input.split()[0][:15]}..."
             st.session_state.timers[label] = {
                 "duration": time_est * 60,
                 "remaining": time_est * 60,
@@ -65,10 +65,10 @@ if st.button("\ud83e\udde0 Analyze with AI"):
                 "nutrition": nutrition
             }
             st.session_state.steps_output = steps
-            st.success(f"\u2705 Timer for '{label}' added! Duration: {time_est} min")
+            st.success(f"✅ Timer for '{label}' added! Duration: {time_est} min")
 
 # ========== MANUAL TIMER ==========
-st.subheader("\u23f2\ufe0f Set a Manual Cooking Timer")
+st.subheader("⏲️ Set a Manual Cooking Timer")
 manual_label = st.text_input("Label for your dish", "My Dish")
 col1, col2 = st.columns(2)
 with col1:
@@ -76,7 +76,7 @@ with col1:
 with col2:
     seconds = st.number_input("Seconds", 0, 59, 0)
 
-if st.button("\u2795 Add Timer"):
+if st.button("➕ Add Timer"):
     total_sec = int(minutes * 60 + seconds)
     if manual_label not in st.session_state.timers:
         st.session_state.timers[manual_label] = {
@@ -88,12 +88,12 @@ if st.button("\u2795 Add Timer"):
             "start_time": None,
             "nutrition": ""
         }
-        st.success(f"\u2705 Timer '{manual_label}' added for {minutes} min {seconds} sec")
+        st.success(f"✅ Timer '{manual_label}' added for {minutes} min {seconds} sec")
     else:
-        st.warning("\u26a0\ufe0f A timer with that label already exists!")
+        st.warning("⚠️ A timer with that label already exists!")
 
 # ========== LIVE TIMERS ==========
-st.subheader("\u23f1\ufe0f Your Cooking Timers")
+st.subheader("⏱️ Your Cooking Timers")
 remove_keys = []
 
 for label, timer in st.session_state.timers.items():
@@ -104,31 +104,31 @@ for label, timer in st.session_state.timers.items():
                 elapsed = time.time() - timer["start_time"]
                 timer["remaining"] = max(0, timer["duration"] - elapsed)
                 if timer["remaining"] == 0:
-                    st.error(f"\u23f0 '{label}' is DONE!")
+                    st.error(f"⏰ '{label}' is DONE!")
                     st.session_state.completed_timers.append((label, time.ctime()))
                     remove_keys.append(label)
-            st.markdown(f"**{label}** - \u23f3 `{format_time(timer['remaining'])}`")
+            st.markdown(f"**{label}** - ⏳ `{format_time(timer['remaining'])}`")
             if timer["duration"] > 0:
                 progress = (timer["duration"] - timer["remaining"]) / timer["duration"]
                 st.progress(progress)
         with col2:
             if not timer["running"]:
-                if st.button(f"\u25b6\ufe0f Start", key=f"start_{label}"):
+                if st.button(f"▶️ Start", key=f"start_{label}"):
                     timer["start_time"] = time.time()
                     timer["running"] = True
                     timer["paused"] = False
             elif not timer["paused"]:
-                if st.button(f"\u23f8 Pause", key=f"pause_{label}"):
+                if st.button(f"⏸ Pause", key=f"pause_{label}"):
                     timer["paused"] = True
                     timer["duration"] = timer["remaining"]
                     timer["running"] = False
             elif timer["paused"]:
-                if st.button(f"\u25b6\ufe0f Resume", key=f"resume_{label}"):
+                if st.button(f"▶️ Resume", key=f"resume_{label}"):
                     timer["start_time"] = time.time()
                     timer["running"] = True
                     timer["paused"] = False
         with col3:
-            if st.button("\ud83d\uddd1 Stop", key=f"stop_{label}"):
+            if st.button("🗑 Stop", key=f"stop_{label}"):
                 remove_keys.append(label)
 
 for key in remove_keys:
@@ -136,14 +136,14 @@ for key in remove_keys:
 
 # ========== COMPLETED TIMERS LOG ==========
 if st.session_state.completed_timers:
-    with st.expander("\ud83d\udcca Completed Timers Log"):
+    with st.expander("📊 Completed Timers Log"):
         for label, done_time in st.session_state.completed_timers:
             st.markdown(f"**{label}** completed at **{done_time}**")
 
 # ========== STEP-BY-STEP INSTRUCTIONS ==========
 if st.session_state.steps_output:
     st.markdown("---")
-    st.subheader("\ud83d\udd2a Step-by-Step Instructions")
+    st.subheader("🔪 Step-by-Step Instructions")
     steps_list = st.session_state.steps_output.split("\n")
     for i, step in enumerate(steps_list, 1):
         if step.strip():
@@ -152,9 +152,9 @@ if st.session_state.steps_output:
 
 # ========== INTERACTIVE CHATBOT ==========
 st.markdown("---")
-st.subheader("\ud83d\udcac Cooking Chat Assistant")
+st.subheader("💬 Cooking Chat Assistant")
 
-mode = st.radio("Select Chat Mode:", ["\ud83c\udf73 Recipe Ideas", "\ud83e\udde0 Cooking Tips", "\ud83e\udd62 Ingredient Substitutes"], horizontal=True)
+mode = st.radio("Select Chat Mode:", ["🍳 Recipe Ideas", "🧠 Cooking Tips", "🧂 Ingredient Substitutes"], horizontal=True)
 
 user_input = st.chat_input("Ask your assistant...")
 final_input = user_input or st.session_state.trigger_prompt
@@ -163,9 +163,9 @@ if final_input:
     st.chat_message("user").write(final_input)
 
     mode_prompt = {
-        "\ud83c\udf73 Recipe Ideas": "Suggest a recipe idea based on:",
-        "\ud83e\udde0 Cooking Tips": "Give a cooking technique or safety tip about:",
-        "\ud83e\udd62 Ingredient Substitutes": "Suggest a substitute for:"
+        "🍳 Recipe Ideas": "Suggest a recipe idea based on:",
+        "🧠 Cooking Tips": "Give a cooking technique or safety tip about:",
+        "🧂 Ingredient Substitutes": "Suggest a substitute for:"
     }
 
     full_prompt = f"{mode_prompt[mode]} {final_input}"
@@ -179,20 +179,20 @@ if final_input:
     st.session_state.trigger_prompt = None
 
 # ========== QUICK CHAT BUTTONS ==========
-st.markdown("### \u26a1 Quick Chat Prompts")
+st.markdown("### ⚡ Quick Chat Prompts")
 col1, col2, col3 = st.columns(3)
 with col1:
-    if st.button("\ud83d\udc68\u200d\ud83c\udf73 Suggest Dinner"):
+    if st.button("👨‍🍳 Suggest Dinner"):
         st.session_state.trigger_prompt = "What can I make for dinner with rice and tomatoes?"
 with col2:
-    if st.button("\ud83e\udd62 Replace Garlic"):
+    if st.button("🧂 Replace Garlic"):
         st.session_state.trigger_prompt = "What can I use instead of garlic?"
 with col3:
-    if st.button("\ud83e\udd57 Healthy Snack"):
+    if st.button("🥗 Healthy Snack"):
         st.session_state.trigger_prompt = "Give me a healthy snack idea under 10 minutes."
 
 # ========== CHAT HISTORY ==========
-with st.expander("\ud83d\udcdc Show Full Chat History"):
+with st.expander("📜 Show Full Chat History"):
     for msg in st.session_state.chat_history:
         st.markdown(f"**{msg['role'].capitalize()}**: {msg['content']}")
 
