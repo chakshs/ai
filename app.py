@@ -3,7 +3,7 @@ import time
 import google.generativeai as genai
 
 # ========== SETUP ==========
-genai.configure(api_key="AIzaSyBUrWiT4phbZT9JKXAG5B8lap6KdHCs1sI")
+genai.configure(api_key="AIzaSyAmF7hNQdmgKu7ilvW7vWoHN74vEgF7GBE")
 model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
 
 st.set_page_config("\ud83c\udf73 AI Cooking Assistant", layout="centered")
